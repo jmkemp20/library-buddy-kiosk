@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useCallback } from "react";
+import Router from "./routes";
+import { ThemeProvider } from "@material-ui/core";
+import GlobalStyles from "./components/GlobalStyles";
+import theme from "./theme";
+import { AuthContext } from "./context/auth-context";
 
-function App() {
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userID, setUserID] = useState("");
+  const [token, setToken] = useState("");
+
+  const login = useCallback(() => {
+    setIsLoggedIn(true);
+  }, []);
+
+  const logout = useCallback(() => {
+    setIsLoggedIn(false);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout, userID: userID, token: token, setUserID: setUserID, setToken: setToken }}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Router />
+      </ThemeProvider>
+    </AuthContext.Provider>
   );
-}
+};
 
 export default App;
