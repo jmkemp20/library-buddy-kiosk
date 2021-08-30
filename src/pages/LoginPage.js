@@ -29,7 +29,6 @@ const LoginPage = () => {
   };
 
   const handleLogin = (values) => {
-    console.log(values['linkid']);
     const loginURL = (values['linkid'] !== '') ? `/api/user/login/${values.linkid}` : "/api/user/login"
     fetch(loginURL, {
       method: "POST",

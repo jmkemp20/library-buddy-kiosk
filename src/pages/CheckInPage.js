@@ -72,21 +72,25 @@ const CheckInPage = () => {
             userbook_id: data[i].userInfo._id,
             title: data[i].libraryInfo.title,
             author: data[i].libraryInfo.author,
-            pages: data[i].libraryInfo.pages,
-            checkout_date: new Date(data[i].checkout_date*1000).toLocaleString()
+            pages:
+              data[i].libraryInfo.pages === -1
+                ? "Unknown"
+                : data[i].libraryInfo.pages,
+            checkout_date: new Date(
+              data[i].checkout_date * 1000
+            ).toLocaleString(),
           };
           studentBookList.push(temp);
         }
         const sortedStudentBookList = studentBookList.sort((a, b) =>
-          a.libraryInfo.title < b.libraryInfo.title ? -1 : 1
+          a.title < b.title ? -1 : 1
         );
         setStudentBooks(sortedStudentBookList);
         setIsLoading(false);
       });
-  }, []);
+  }, [auth.token]);
 
   const handleRowSelection = (row) => {
-    console.log(row.row);
     setSelectedRow(row.row);
   };
 
@@ -96,8 +100,8 @@ const CheckInPage = () => {
 
   const finalCheckIn = () => {
     if (
-      confirmationISBN.current.value === selectedRow.isbn13 ||
-      confirmationISBN.current.value === selectedRow.isbn10
+      confirmationISBN.current.value === selectedRow.isbn_13 ||
+      confirmationISBN.current.value === selectedRow.isbn_10
     ) {
       setOpenLoading(true);
       const selectedStudent = JSON.parse(
@@ -117,10 +121,9 @@ const CheckInPage = () => {
       }).then((res) => {
         if (res.ok) {
           res.json().then((data) => {
-            const removalIndex = studentBooks.findIndex((element) => element.userbook_id)
             if (studentBooks.includes(selectedRow)) {
               setOpen(false);
-              const removalIndex = studentBooks.indexOf(selectedRow);
+              const removalIndex = studentBooks.indexOf(selectedRow.id);
               const tempStudentBooks = [...studentBooks];
               tempStudentBooks.splice(removalIndex, 1);
               setStudentBooks(tempStudentBooks);
@@ -155,7 +158,7 @@ const CheckInPage = () => {
   return (
     <>
       <Helmet>
-        <title>CheckIn | ClassroomLib</title>
+        <title>CheckIn | LibraryBuddy</title>
       </Helmet>
 
       <Card>
@@ -177,7 +180,8 @@ const CheckInPage = () => {
               rowHeight={studentBooks.length > 5 ? 40 : 55}
               hideFooterPagination
               hideFooter
-              headerHeight={40}
+              headerHeight={50}
+              disableColumnMenu
               onRowClick={(selectedRow) => handleRowSelection(selectedRow)}
             />
           </Box>
@@ -218,6 +222,7 @@ const CheckInPage = () => {
             id="isbn"
             label="ISBN"
             fullWidth
+            autoComplete="off"
             inputRef={confirmationISBN}
           />
         </DialogContent>

@@ -1,5 +1,8 @@
 import { Helmet } from "react-helmet";
-import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useState, useRef } from "react";
+import { AuthContext } from "../context/auth-context";
+import Idle from "react-idle";
 import {
   Typography,
   Box,
@@ -18,6 +21,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
 const CheckOutPage = () => {
+  const navigate = useNavigate();
+  const auth = useContext(AuthContext);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openLoading, setOpenLoading] = useState(false);
   const scannedISBN = useRef("");
@@ -33,7 +38,6 @@ const CheckOutPage = () => {
 
   const handleCheckOut = () => {
     const inputISBN = scannedISBN.current.value;
-    console.log(inputISBN);
     if (inputISBN.length !== 10 && inputISBN.length !== 13) {
       scannedISBN.current?.focus();
       scannedISBN.current.value = "";
@@ -58,14 +62,15 @@ const CheckOutPage = () => {
     );
     setOpenConfirmation(false);
     setOpenLoading(true);
-    fetch("/checkout", {
+    fetch("/api/students/checkout", {
       method: "POST",
       body: JSON.stringify({
-        userId: selectedStudent.parent_id,
-        studentId: selectedStudent._id,
+        student_id: selectedStudent._id,
         isbn: scannedISBN.current.value,
       }),
       headers: {
+        "X-API-KEY": auth.token,
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
     }).then((res) => {
@@ -90,7 +95,7 @@ const CheckOutPage = () => {
   return (
     <>
       <Helmet>
-        <title>CheckOut | ClassroomLib</title>
+        <title>CheckOut | LibraryBuddy</title>
       </Helmet>
       <Typography
         sx={{
@@ -107,7 +112,18 @@ const CheckOutPage = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 330,
+        }}
+      >
+        <Typography variant="h5">
+          {JSON.parse(sessionStorage.getItem("selectedStudent")).name}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 310,
         }}
       >
         <TextField
@@ -115,6 +131,7 @@ const CheckOutPage = () => {
           margin="dense"
           id="isbn"
           label="ISBN"
+          autoComplete="off"
           inputRef={scannedISBN}
           sx={{
             width: 350,
@@ -205,6 +222,9 @@ const CheckOutPage = () => {
           </IconButton>
         }
       />
+      <Idle timeout={30000} render={({ idle }) => (
+        <>{idle ? navigate("/app/dashboard", { replace: true }) : console.log("reload")}</>
+        )} />
     </>
   );
 };

@@ -17,7 +17,6 @@ import { AuthContext } from '../context/auth-context';
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import Logo from "./Logo";
-import linkUserId from "../utils/linkUserId";
 
 const DashboardNavbar = (rest) => {
   const auth = useContext(AuthContext);
@@ -72,8 +71,8 @@ const DashboardNavbar = (rest) => {
                   <EditIcon />
                 </IconButton>
               }
-              title="ClassroomLibKiosk"
-              subheader={`ClassroomLib - Joshua Kemp © ${new Date().getFullYear()}`}
+              title="LibraryBuddy Kiosk"
+              subheader={`LibraryBuddy LLC © ${new Date().getFullYear()}`}
             />
             <Divider />
             <CardContent>

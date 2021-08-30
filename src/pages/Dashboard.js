@@ -46,10 +46,9 @@ const Dashboard = () => {
         setStudentList(sortedStudents);
         setIsLoading(false);
       });
-  }, []);
+  }, [auth.token]);
 
   const handleRowSelection = (row) => {
-    console.log(row.row);
     setSelectedRow(row.row);
   };
 
@@ -74,7 +73,7 @@ const Dashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard | ClassroomLib</title>
+        <title>Dashboard | LibraryBuddy</title>
       </Helmet>
 
       {isLoading ? (
@@ -96,6 +95,7 @@ const Dashboard = () => {
             hideFooterPagination
             hideFooter
             headerHeight={50}
+            disableColumnMenu
             onRowClick={(selectedRow) => handleRowSelection(selectedRow)}
           />
         </Box>
