@@ -87,7 +87,7 @@ const Dashboard = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Box style={{ height: 370, width: "100%" }}>
+        <Box style={{ height: (window.innerHeight - 110), width: "100%" }}>
           <DataGrid
             rows={studentList}
             columns={studentColumnNames}

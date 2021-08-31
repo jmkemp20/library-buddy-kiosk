@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import { AuthContext } from '../context/auth-context';
+import Idle from "react-idle";
 import {
   Card,
   Box,
@@ -173,7 +174,7 @@ const CheckInPage = () => {
             <CircularProgress />
           </Box>
         ) : (
-          <Box style={{ height: 370, width: "100%" }}>
+          <Box style={{ height: window.innerHeight - 110, width: "100%" }}>
             <DataGrid
               rows={studentBooks}
               columns={bookColumnNames}
@@ -273,6 +274,14 @@ const CheckInPage = () => {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
+      />
+      <Idle
+        timeout={30000}
+        render={({ idle }) => (
+          <>
+            {idle ? navigate("/app/dashboard", { replace: true }) : console.log("reload")}
+          </>
+        )}
       />
     </>
   );

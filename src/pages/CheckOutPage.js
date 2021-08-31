@@ -123,7 +123,7 @@ const CheckOutPage = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 310,
+          height: window.innerHeight - 170,
         }}
       >
         <TextField
